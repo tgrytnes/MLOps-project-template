@@ -1,0 +1,16 @@
+FROM python:3.11-slim
+
+# Note: This image relies on TensorFlow's pip extra `and-cuda` to pull CUDA 12
+# runtime libs. Host must have NVIDIA drivers + NVIDIA Container Toolkit.
+
+WORKDIR /work
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential git \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY . /work
+
+RUN pip install -U pip && pip install '.[tf-gpu]' && pip install jupyterlab
+
+CMD ["bash"]

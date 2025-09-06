@@ -1,0 +1,50 @@
+[project]
+name = "yourproj"
+version = "0.3.0"
+requires-python = ">=3.10"
+dependencies = [
+    "pandas>=2.0",
+    "numpy>=1.26",
+    "scikit-learn>=1.3",
+    "pyyaml>=6.0",
+    "matplotlib>=3.7",
+    "ipython>=8.0",
+    "ipykernel",
+    "nbformat",
+    "nbconvert",
+    "pre-commit",
+    "ruff",
+    "black",
+    "pytest",
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.optional-dependencies]
+# Install GPU extras with: pip install .[gpu]
+# Note: For CUDA-enabled PyTorch wheels, you must provide the correct index URL,
+# e.g. --index-url https://download.pytorch.org/whl/cu121
+gpu = [
+    "torch==2.3.1",
+    "torchvision==0.18.1",
+    "torchaudio==2.3.1",
+]
+
+# TensorFlow variants
+# CPU-only (works on x86_64/arm64 where wheels exist)
+tf = [
+    "tensorflow==2.16.1",
+]
+# GPU (Linux x86_64) — includes CUDA libs via pip; requires NVIDIA Container Toolkit on host
+tf-gpu = [
+    "tensorflow[and-cuda]==2.16.1",
+]

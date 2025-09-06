@@ -1,0 +1,10 @@
+seed: 42
+paths:
+  raw_prices: data/raw/prices.csv
+  raw_earnings: data/raw/earnings.csv
+  artifacts: artifacts
+train:
+  target: y_d1
+  test_size: 0.25
+  features: ["surprise"]
+  model: "logreg"

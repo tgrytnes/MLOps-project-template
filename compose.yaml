@@ -1,0 +1,108 @@
+name: yourproj
+
+services:
+  cpu:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /work
+    volumes:
+      - .:/work
+    tty: true
+    stdin_open: true
+    profiles: ["cpu"]
+
+  cpu-lab:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /work
+    volumes:
+      - .:/work
+    ports:
+      - "8888:8888"
+    command: jupyter lab --ip=0.0.0.0 --no-browser --NotebookApp.token='' --NotebookApp.password='' --allow-root
+    profiles: ["cpu"]
+
+  gpu:
+    build:
+      context: .
+      dockerfile: Dockerfile.gpu
+    working_dir: /work
+    volumes:
+      - .:/work
+    tty: true
+    stdin_open: true
+    profiles: ["gpu"]
+    # Note: add --gpus all when running, e.g.:
+    # docker compose --profile gpu run --rm --gpus all gpu bash
+
+  gpu-lab:
+    build:
+      context: .
+      dockerfile: Dockerfile.gpu
+    working_dir: /work
+    volumes:
+      - .:/work
+    ports:
+      - "8889:8888"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    command: jupyter lab --ip=0.0.0.0 --no-browser --NotebookApp.token='' --NotebookApp.password='' --allow-root
+    profiles: ["gpu"]
+
+  tf:
+    build:
+      context: .
+      dockerfile: Dockerfile.tf
+    working_dir: /work
+    volumes:
+      - .:/work
+    tty: true
+    stdin_open: true
+    profiles: ["tf"]
+
+  tf-lab:
+    build:
+      context: .
+      dockerfile: Dockerfile.tf
+    working_dir: /work
+    volumes:
+      - .:/work
+    ports:
+      - "8890:8888"
+    command: jupyter lab --ip=0.0.0.0 --no-browser --NotebookApp.token='' --NotebookApp.password='' --allow-root
+    profiles: ["tf"]
+
+  tf-gpu:
+    build:
+      context: .
+      dockerfile: Dockerfile.tf-gpu
+    working_dir: /work
+    volumes:
+      - .:/work
+    tty: true
+    stdin_open: true
+    profiles: ["tf-gpu"]
+    # Note: add --gpus all when running, e.g.:
+    # docker compose --profile tf-gpu run --rm --gpus all tf-gpu bash
+
+  tf-gpu-lab:
+    build:
+      context: .
+      dockerfile: Dockerfile.tf-gpu
+    working_dir: /work
+    volumes:
+      - .:/work
+    ports:
+      - "8891:8888"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    command: jupyter lab --ip=0.0.0.0 --no-browser --NotebookApp.token='' --NotebookApp.password='' --allow-root
+    profiles: ["tf-gpu"]
