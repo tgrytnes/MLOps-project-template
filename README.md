@@ -1,116 +1,33 @@
-# AI Project Template — Local + Cloud Ready
+# AI Project Template
 
-**Source files-first** , **config-driven pipelines**, stable **artifacts** for LaTeX, tests, pre-commit, and CI.
+This repository contains the core, hardware-independent code for a config-driven AI pipeline project. It includes the source files, configurations, data, and tests.
+
+**For environment setup and infrastructure instructions (including Docker, RunPod, etc.), please see the dedicated infrastructure repository.**
 
 ## Quickstart
-```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -U pip && pip install -r requirements.txt
-pre-commit install
-make smoke
-jupyter lab
-make pipeline CONFIG=configs/exp_baseline.yaml
-make report   # builds report/out/main.pdf
-```
 
-## Installation Profiles
+Once your development environment is configured (e.g., inside a Docker container from the infrastructure repository), you can run the full pipeline.
 
-- CPU (lightweight):
-  ```bash
-  pip install -U pip && pip install .
-  ```
-
-- GPU (heavy, PyTorch):
-  - For CUDA wheels (recommended on GPU hosts):
-    ```bash
-    pip install -U pip
-    pip install '.[gpu]' --index-url https://download.pytorch.org/whl/cu121
-    ```
-  - For CPU-only wheels (works everywhere but no GPU acceleration):
-    ```bash
-    pip install -U pip && pip install '.[gpu]'
-    ```
-
-- TensorFlow (CPU):
-  ```bash
-  pip install -U pip && pip install '.[tf]'
-  ```
-
-- TensorFlow (GPU, Linux x86_64):
-  ```bash
-  pip install -U pip && pip install '.[tf-gpu]'
-  # Requires NVIDIA Container Toolkit and compatible host drivers
-  ```
-
-## Cloud
-```bash
-make docker-build
-# on a GPU host with nvidia-container-toolkit:
-docker run --gpus all -v $(pwd):/work -w /work yourproj:latest   bash -lc "python -m yourproj.train --config configs/exp_baseline.yaml"
-```
-
-### Docker images
-
-- CPU (base):
-  ```bash
-  make docker-build
-  docker run -it --rm -v $(pwd):/work -w /work yourproj:latest bash
-  ```
-
-- PyTorch GPU:
-  ```bash
-  make docker-build-gpu
-  docker run --gpus all -it --rm -v $(pwd):/work -w /work yourproj:gpu bash
-  ```
-
-- TensorFlow CPU:
-  ```bash
-  make docker-build-tf
-  docker run -it --rm -v $(pwd):/work -w /work yourproj:tf bash
-  ```
-
-- TensorFlow GPU:
-  ```bash
-  make docker-build-tf-gpu
-  docker run --gpus all -it --rm -v $(pwd):/work -w /work yourproj:tf-gpu bash
-  ```
-
-Notes:
-- TensorFlow GPU via pip (`tensorflow[and-cuda]`) is currently supported on Linux x86_64. The container still requires NVIDIA drivers on the host.
-- Raspberry Pi: TensorFlow wheels may be limited; PyTorch CPU or pure-NumPy/scikit-learn workloads are more feasible on Pi.
-
-### docker compose profiles
-
-Interactive shells with the compose profiles defined in `compose.yaml`:
+The main training pipeline can be executed with a single script, which takes a configuration file as an argument:
 
 ```bash
-# CPU
-docker compose --profile cpu run --rm cpu bash
-
-# PyTorch GPU (requires NVIDIA Container Toolkit)
-docker compose --profile gpu run --rm --gpus all gpu bash
-
-# TensorFlow CPU
-docker compose --profile tf run --rm tf bash
-
-# TensorFlow GPU (requires NVIDIA Container Toolkit)
-docker compose --profile tf-gpu run --rm --gpus all tf-gpu bash
+# Run the full pipeline using the baseline experiment configuration
+bash scripts/run_train.sh configs/exp_baseline.yaml
 ```
 
-JupyterLab services under each profile:
+This script will handle:
+1.  Preprocessing the data
+2.  Generating features
+3.  Training the model
+4.  Evaluating the results
 
-```bash
-# CPU JupyterLab on http://localhost:8888
-make compose-cpu-lab
+## Project Structure
 
-# PyTorch GPU JupyterLab on http://localhost:8889 (requires NVIDIA runtime)
-make compose-gpu-lab
+- `src/yourproj`: Main source code for the project.
+- `configs`: YAML configuration files for different experiments.
+- `data`: Raw and processed data.
+- `notebooks`: Jupyter notebooks for exploration and analysis.
+- `scripts`: Helper scripts for running parts of the pipeline.
+- `tests`: Unit and integration tests.
+- `report`: LaTeX files for generating reports.
 
-# TensorFlow CPU JupyterLab on http://localhost:8890
-make compose-tf-lab
-
-# TensorFlow GPU JupyterLab on http://localhost:8891 (requires NVIDIA runtime)
-make compose-tf-gpu-lab
-```
-
-All JupyterLab instances start without token/password inside the container for local development convenience. Consider adding auth or `-d` (detached) if exposing ports more broadly.

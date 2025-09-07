@@ -28,23 +28,3 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
-
-[project.optional-dependencies]
-# Install GPU extras with: pip install .[gpu]
-# Note: For CUDA-enabled PyTorch wheels, you must provide the correct index URL,
-# e.g. --index-url https://download.pytorch.org/whl/cu121
-gpu = [
-    "torch==2.3.1",
-    "torchvision==0.18.1",
-    "torchaudio==2.3.1",
-]
-
-# TensorFlow variants
-# CPU-only (works on x86_64/arm64 where wheels exist)
-tf = [
-    "tensorflow==2.16.1",
-]
-# GPU (Linux x86_64) — includes CUDA libs via pip; requires NVIDIA Container Toolkit on host
-tf-gpu = [
-    "tensorflow[and-cuda]==2.16.1",
-]
