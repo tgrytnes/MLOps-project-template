@@ -1,0 +1,70 @@
+project:
+  type: default
+  # Render outputs into the report folder to keep things tidy
+  output-dir: report
+
+format:
+  html:
+    theme: cosmo
+    css: notebooks/styles.css
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-copy: true
+    code-fold: show
+    code-tools: true
+    anchor-sections: true
+    smooth-scroll: true
+    highlight-style: github
+    fig-cap-location: bottom
+    tbl-cap-location: top
+  pdf:
+    documentclass: scrartcl
+    toc: true
+    number-sections: true
+    include-in-header:
+      - text: |
+          % Colors and section styling
+          \usepackage{sectsty}
+          \usepackage{xcolor}
+          \definecolor{sectionblue}{HTML}{2563eb}
+          \sectionfont{\color{sectionblue}\bfseries\Large}
+          \subsectionfont{\color{sectionblue}\bfseries\large}
+
+          % Title styling
+          \usepackage{titling}
+          \pretitle{\begin{center}\Huge\bfseries\color{sectionblue}}
+          \posttitle{\par\end{center}\vskip 0.5em}
+          \preauthor{\begin{center}\large}
+          \postauthor{\par\end{center}}
+          \predate{\begin{center}\small}
+          \postdate{\par\end{center}}
+
+          % Code block styling via Shaded redefinition
+          \usepackage{tcolorbox}
+          \definecolor{codebg}{HTML}{F0F8FF}
+          \renewenvironment{Shaded}{%
+            \begin{tcolorbox}[%
+              colback=codebg,%
+              colframe=codebg,%
+              borderline west={3pt}{0pt}{sectionblue},%
+              boxrule=0pt,%
+              arc=0pt,%
+              boxsep=5pt,%
+              left=2mm,%
+              right=2mm,%
+              top=2mm,%
+              bottom=2mm% 
+            ]% 
+          }{%
+            \end{tcolorbox}%
+          }
+
+execute:
+  echo: true
+  warning: false
+  message: false
+
+metadata:
+  title-block-banner: true
+  title-block-style: default

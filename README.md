@@ -21,6 +21,30 @@ This script will handle:
 3.  Training the model
 4.  Evaluating the results
 
+## Environment Setup
+
+- Script: `AI_Template/scripts/bootstrap_env.sh`
+- Purpose: Installs Python (optional), sets up a virtualenv, installs project dependencies, and optionally installs Quarto and TeX for PDF/Quarto rendering.
+
+Examples (run from repo root):
+
+```bash
+# Standard setup: venv + deps + Quarto + BasicTeX (smaller)
+bash AI_Template/scripts/bootstrap_env.sh
+
+# Use a specific Python version and full TeX (large download)
+bash AI_Template/scripts/bootstrap_env.sh --python-version 3.11 --tex full
+
+# Skip system package installs (brew/apt) if you manage them yourself
+bash AI_Template/scripts/bootstrap_env.sh --no-system
+```
+
+Notes:
+- macOS: Uses Homebrew to install Python, Quarto, and either BasicTeX (default) or full MacTeX.
+- Linux (Debian/Ubuntu): Uses apt for Python and TeX; downloads Quarto `.deb` if selected.
+- After completion, activate the environment with `source .venv/bin/activate` (or your chosen `--venv`).
+
+
 ## Project Structure
 
 - `src/yourproj`: Main source code for the project.
@@ -30,4 +54,3 @@ This script will handle:
 - `scripts`: Helper scripts for running parts of the pipeline.
 - `tests`: Unit and integration tests.
 - `report`: LaTeX files for generating reports.
-
