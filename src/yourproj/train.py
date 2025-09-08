@@ -21,7 +21,11 @@ def main(config_path: str = "configs/exp_baseline.yaml"):
     train, test = chrono_split(feats, "t0_date", cfg.train['test_size'])
     Xtr, ytr = train[Xcols].values, train[cfg.train['target']].astype(int).values
     Xte, yte = test[Xcols].values, test[cfg.train['target']].astype(int).values
-    model = train_logreg(Xtr, ytr)
+    # Select backend from config if provided; defaults to auto
+    backend = None
+    if cfg.compute and isinstance(cfg.compute, dict):
+        backend = cfg.compute.get("backend", None)
+    model = train_logreg(Xtr, ytr, backend=backend)
     prob = model.predict_proba(Xte)[:,1]
     pred = (prob >= 0.5).astype(int)
     metrics = {
