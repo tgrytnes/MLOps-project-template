@@ -20,15 +20,17 @@ class _SKLearnWrapper:
 
 
 class _TorchWrapper:
-    def __init__(self, n_features: int, device: str):
+    def __init__(self, n_features: int, device: str, use_mp: bool = False):
         import torch
         import torch.nn as nn
 
         self.torch = torch
         self.device = torch.device(device)
+        self.use_mp = use_mp and (self.device.type == "cuda")
         self.model = nn.Sequential(nn.Linear(n_features, 1)).to(self.device)
         self.loss = nn.BCEWithLogitsLoss()
         self.opt = torch.optim.Adam(self.model.parameters(), lr=1e-2)
+        self.scaler = torch.cuda.amp.GradScaler(enabled=self.use_mp)
 
     def fit(self, X: np.ndarray, y: np.ndarray, epochs: int = 50, batch_size: int = 256) -> "_TorchWrapper":
         torch = self.torch
@@ -41,10 +43,18 @@ class _TorchWrapper:
                 xb = X_t[i : i + batch_size]
                 yb = y_t[i : i + batch_size]
                 self.opt.zero_grad()
-                logits = self.model(xb)
-                loss = self.loss(logits, yb)
-                loss.backward()
-                self.opt.step()
+                if self.use_mp:
+                    with torch.cuda.amp.autocast():
+                        logits = self.model(xb)
+                        loss = self.loss(logits, yb)
+                    self.scaler.scale(loss).backward()
+                    self.scaler.step(self.opt)
+                    self.scaler.update()
+                else:
+                    logits = self.model(xb)
+                    loss = self.loss(logits, yb)
+                    loss.backward()
+                    self.opt.step()
         return self
 
     def predict_proba(self, X: np.ndarray) -> np.ndarray:
@@ -59,10 +69,15 @@ class _TorchWrapper:
 
 
 class _TFWrapper:
-    def __init__(self, n_features: int):
+    def __init__(self, n_features: int, use_mp: bool = False):
         import tensorflow as tf
 
         self.tf = tf
+        if use_mp:
+            try:
+                tf.keras.mixed_precision.set_global_policy("mixed_float16")
+            except Exception:
+                pass
         self.model = tf.keras.Sequential([
             tf.keras.layers.Input(shape=(n_features,)),
             tf.keras.layers.Dense(1),  # logits
@@ -85,7 +100,7 @@ class _TFWrapper:
         return np.stack([probs_neg, probs_pos], axis=1)
 
 
-def train_logreg(X: Any, y: Any, backend: str | None = None):
+def train_logreg(X: Any, y: Any, backend: str | None = None, mixed_precision: str | bool | None = None):
     """
     Train a simple logistic model with automatic backend/device selection.
 
@@ -98,11 +113,24 @@ def train_logreg(X: Any, y: Any, backend: str | None = None):
 
     env = pick_compute_env(backend or "auto")
 
+    # Decide mixed precision usage
+    mp_pref = ("auto" if mixed_precision is None else mixed_precision)
+    use_mp = False
+    if isinstance(mp_pref, bool):
+        use_mp = mp_pref
+    else:  # auto
+        if env.framework == "torch" and env.device.startswith("cuda"):
+            use_mp = True
+        elif env.framework == "tensorflow" and env.device != "cpu":
+            use_mp = True
+
+    print(f"[compute] framework={env.framework} device={env.device} detail={env.detail} mixed_precision={use_mp}")
+
     if env.framework == "torch":
-        model = _TorchWrapper(n_features=X.shape[1], device=env.device)
+        model = _TorchWrapper(n_features=X.shape[1], device=env.device, use_mp=use_mp)
         return model.fit(X, y)
     if env.framework == "tensorflow":
-        model = _TFWrapper(n_features=X.shape[1])
+        model = _TFWrapper(n_features=X.shape[1], use_mp=use_mp)
         return model.fit(X, y)
 
     # sklearn fallback

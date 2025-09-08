@@ -39,6 +39,12 @@ def _tf_env() -> Optional[ComputeEnv]:
         gpus = tf.config.list_physical_devices("GPU")
     except Exception:
         gpus = []
+    # Enable memory growth to avoid TF reserving all GPU memory
+    try:
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+    except Exception:
+        pass
     if gpus:
         # Covers CUDA, ROCm, and Apple tf-metal plugin; TensorFlow abstracts it as GPU
         return ComputeEnv(framework="tensorflow", device="gpu:0", detail="gpu")

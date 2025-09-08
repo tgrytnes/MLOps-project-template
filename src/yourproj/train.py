@@ -23,9 +23,11 @@ def main(config_path: str = "configs/exp_baseline.yaml"):
     Xte, yte = test[Xcols].values, test[cfg.train['target']].astype(int).values
     # Select backend from config if provided; defaults to auto
     backend = None
+    mp = None
     if cfg.compute and isinstance(cfg.compute, dict):
         backend = cfg.compute.get("backend", None)
-    model = train_logreg(Xtr, ytr, backend=backend)
+        mp = cfg.compute.get("mixed_precision", None)
+    model = train_logreg(Xtr, ytr, backend=backend, mixed_precision=mp)
     prob = model.predict_proba(Xte)[:,1]
     pred = (prob >= 0.5).astype(int)
     metrics = {

@@ -11,3 +11,5 @@ train:
 compute:
   # backend: auto|torch|tensorflow|cpu
   backend: auto
+  # mixed_precision: auto|true|false
+  mixed_precision: auto
