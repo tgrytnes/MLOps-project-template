@@ -4,7 +4,8 @@ import pandas as pd
 from sklearn.metrics import accuracy_score, roc_auc_score
 from .config import load_config
 from .utils import ensure_dir, save_json
-from .models import train_logreg
+from .trainer import train_and_eval
+from .data.tabular import arrays_from_dataframe
 
 def chrono_split(df: pd.DataFrame, time_col: str, test_size=0.25):
     df = df.sort_values(time_col)
@@ -19,17 +20,12 @@ def main(config_path: str = "configs/exp_baseline.yaml"):
     feats = feats.dropna(subset=[cfg.train['target']])
     Xcols = cfg.train['features']
     train, test = chrono_split(feats, "t0_date", cfg.train['test_size'])
-    Xtr, ytr = train[Xcols].values, train[cfg.train['target']].astype(int).values
-    Xte, yte = test[Xcols].values, test[cfg.train['target']].astype(int).values
-    # Select backend from config if provided; defaults to auto
-    backend = None
-    mp = None
-    if cfg.compute and isinstance(cfg.compute, dict):
-        backend = cfg.compute.get("backend", None)
-        mp = cfg.compute.get("mixed_precision", None)
-    model = train_logreg(Xtr, ytr, backend=backend, mixed_precision=mp)
-    prob = model.predict_proba(Xte)[:,1]
-    pred = (prob >= 0.5).astype(int)
+    Xtr, ytr = arrays_from_dataframe(train, Xcols, cfg.train['target'])
+    Xte, yte = arrays_from_dataframe(test, Xcols, cfg.train['target'])
+    result = train_and_eval(Xtr, ytr, Xte, yte, cfg)
+    model = result["model"]
+    prob = result["prob"]
+    pred = result["pred"]
     metrics = {
         "accuracy": float(accuracy_score(yte, pred)),
         "auc": float(roc_auc_score(yte, prob)) if len(set(yte))>1 else None,
@@ -39,6 +35,25 @@ def main(config_path: str = "configs/exp_baseline.yaml"):
     out = Path(cfg.paths['artifacts']) / "metrics.json"
     ensure_dir(out.parent)
     save_json(metrics, out)
+    # Save model checkpoint (best-effort; different formats per backend)
+    ckpt_dir = Path(cfg.paths['artifacts']) / "checkpoints"
+    ensure_dir(ckpt_dir)
+    ckpt_path = ckpt_dir / "model"
+    try:
+        # Torch uses raw path; TF SavedModel prefers directory; sklearn uses pickle file
+        if hasattr(model, "save"):
+            # Try a few common extensions/paths
+            try:
+                model.save(str(ckpt_path))
+            except Exception:
+                model.save(str(ckpt_path.with_suffix('.bin')))
+        else:
+            # Fallback: pickle
+            import pickle
+            with open(ckpt_path.with_suffix('.pkl'), 'wb') as f:
+                pickle.dump(model, f)
+    except Exception as e:
+        print("Warning: failed to save model checkpoint:", e)
     print("Saved metrics to", out, metrics)
 
 if __name__ == "__main__":

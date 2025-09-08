@@ -9,6 +9,8 @@ class Config:
     paths: dict
     train: dict
     compute: dict | None = None
+    trainer: dict | None = None
+    task: str | None = None
 
 def load_config(path: str | Path) -> Config:
     with open(path, "r") as f:
@@ -19,4 +21,7 @@ def load_config(path: str | Path) -> Config:
     else:
         d["compute"].setdefault("backend", "auto")
         d["compute"].setdefault("mixed_precision", "auto")
+    # sensible defaults for trainer/task
+    d.setdefault("task", "tabular")
+    d.setdefault("trainer", {"epochs": 1, "batch_size": 1024, "lr": 1e-2})
     return Config(**d)
