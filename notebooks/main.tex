@@ -69,46 +69,6 @@
 \fi
 \makeatother
 
-\usepackage{color}
-\usepackage{fancyvrb}
-\newcommand{\VerbBar}{|}
-\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
-\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
-% Add ',fontsize=\small' for more characters per line
-\usepackage{framed}
-\definecolor{shadecolor}{RGB}{241,243,245}
-\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
-\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
-\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.40,0.45,0.13}{#1}}
-\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
-\newcommand{\CharTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
-\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
-\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
-\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
-\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
-\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
-\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
-\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.28,0.35,0.67}{#1}}
-\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.46,0.62}{#1}}
-\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
-\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
-\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
-\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
-\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
-\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
-\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
-\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
-\newcommand{\StringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
-\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.07,0.07,0.07}{#1}}
-\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
-\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
 
 \usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
@@ -260,16 +220,6 @@ preprocessing, EDA, modeling, training, evaluation}
 \tableofcontents
 }
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\ImportTok{import}\NormalTok{ sys}
-\ImportTok{from}\NormalTok{ pathlib }\ImportTok{import}\NormalTok{ Path}
-
-\CommentTok{\# Add the src directory to Python path for importing project modules}
-\NormalTok{sys.path.append(}\BuiltInTok{str}\NormalTok{(Path.cwd().parent }\OperatorTok{/} \StringTok{\textquotesingle{}src\textquotesingle{}}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
-
 \section{Project Introduction}\label{project-introduction}
 
 \begin{itemize}
@@ -356,26 +306,6 @@ After cleaning and factorization, we'll split back into train/test for
 hyperparameter tuning (using only train labels) and a final, held-out
 evaluation on the test labels.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\ImportTok{import}\NormalTok{ sys}
-\ImportTok{from}\NormalTok{ pathlib }\ImportTok{import}\NormalTok{ Path}
-\NormalTok{sys.path.append(}\BuiltInTok{str}\NormalTok{(Path.cwd() }\OperatorTok{/} \StringTok{"src"}\NormalTok{))}
-
-\ImportTok{import}\NormalTok{ pandas }\ImportTok{as}\NormalTok{ pd}
-\ImportTok{import}\NormalTok{ matplotlib.pyplot }\ImportTok{as}\NormalTok{ plt}
-\ImportTok{from}\NormalTok{ IPython.display }\ImportTok{import}\NormalTok{ display  }\CommentTok{\# so display(...) works in both notebook \& script}
-
-\ImportTok{from}\NormalTok{ yourproj.ingest }\ImportTok{import}\NormalTok{ load\_prices, load\_earnings}
-\ImportTok{from}\NormalTok{ yourproj.preprocess }\ImportTok{import}\NormalTok{ align\_events}
-\ImportTok{from}\NormalTok{ yourproj.labels }\ImportTok{import}\NormalTok{ make\_day\_ahead\_label}
-\ImportTok{from}\NormalTok{ yourproj.features }\ImportTok{import}\NormalTok{ build\_structured\_features}
-
-\NormalTok{RAW\_PRICES }\OperatorTok{=}\NormalTok{ Path(}\StringTok{"data/raw/prices.csv"}\NormalTok{)}
-\NormalTok{RAW\_EARNINGS }\OperatorTok{=}\NormalTok{ Path(}\StringTok{"data/raw/earnings.csv"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
 \section{Preprocess}\label{preprocess}
 
 \subsection{Data Cleaning}\label{data-cleaning}
@@ -407,15 +337,6 @@ leakage checks.
 Aligning price and earnings data, then creating labels for model
 training
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{events }\OperatorTok{=}\NormalTok{ align\_events(prices, earnings)}
-\NormalTok{labeled }\OperatorTok{=}\NormalTok{ make\_day\_ahead\_label(events)}
-\NormalTok{feats }\OperatorTok{=}\NormalTok{ build\_structured\_features(labeled)}
-\NormalTok{display(feats.head())}
-\end{Highlighting}
-\end{Shaded}
-
 \begin{longtable}[]{@{}lllllllllll@{}}
 \toprule\noalign{}
 & ticker & announce\_datetime & bmo\_amc & eps\_actual & eps\_estimate &
@@ -444,33 +365,10 @@ t0\_date & close\_t0 & close\_t1 & y\_d1 & surprise \\
 \textcolor{QuartoInternalColor1}{}\textcolor{QuartoInternalColor1}{View Jupyter <a href='command:jupyter.viewOutput'>log</a> for further details.}
 \end{Highlighting}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Run preprocess + feature engineering to produce artifacts}
-\ImportTok{import}\NormalTok{ sys}
-\ImportTok{from}\NormalTok{ pathlib }\ImportTok{import}\NormalTok{ Path}
-\NormalTok{sys.path.append(}\BuiltInTok{str}\NormalTok{(Path.cwd() }\OperatorTok{/} \StringTok{\textquotesingle{}src\textquotesingle{}}\NormalTok{))}
-\ImportTok{from}\NormalTok{ yourproj.preprocess }\ImportTok{import}\NormalTok{ main }\ImportTok{as}\NormalTok{ preprocess\_main}
-\ImportTok{from}\NormalTok{ yourproj.features }\ImportTok{import}\NormalTok{ main }\ImportTok{as}\NormalTok{ features\_main}
-\NormalTok{CONFIG }\OperatorTok{=} \StringTok{\textquotesingle{}configs/exp\_baseline.yaml\textquotesingle{}}
-\NormalTok{preprocess\_main(CONFIG)}
-\NormalTok{features\_main(CONFIG)}
-\end{Highlighting}
-\end{Shaded}
-
 \section{Exploratory Data Analysis}\label{exploratory-data-analysis}
 
 Use this section to explore distributions, correlations, seasonality,
 and sanity checks. Capture insights and hypotheses to guide modeling.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{prices }\OperatorTok{=}\NormalTok{ load\_prices(RAW\_PRICES)}
-\NormalTok{earnings }\OperatorTok{=}\NormalTok{ load\_earnings(RAW\_EARNINGS)}
-\NormalTok{display(prices.head())}
-\NormalTok{display(earnings.head())}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{longtable}[]{@{}llllllll@{}}
 \toprule\noalign{}
@@ -515,18 +413,6 @@ eps\_estimate \\
 
 Visualization of earnings surprise distribution to understand data
 characteristics
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{Path(}\StringTok{"artifacts/figures"}\NormalTok{).mkdir(parents}\OperatorTok{=}\VariableTok{True}\NormalTok{, exist\_ok}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
-\ControlFlowTok{if} \KeywordTok{not}\NormalTok{ feats.empty }\KeywordTok{and} \StringTok{"surprise"} \KeywordTok{in}\NormalTok{ feats:}
-\NormalTok{    ax }\OperatorTok{=}\NormalTok{ feats[}\StringTok{"surprise"}\NormalTok{].hist(bins}\OperatorTok{=}\DecValTok{30}\NormalTok{)}
-\NormalTok{    ax.set\_title(}\StringTok{"Earnings Surprise Distribution"}\NormalTok{)}
-\NormalTok{    plt.tight\_layout()}
-\NormalTok{    plt.savefig(}\StringTok{"artifacts/figures/surprise\_dist.pdf"}\NormalTok{)}
-\NormalTok{    plt.show()}
-\end{Highlighting}
-\end{Shaded}
 
 \pandocbounded{\includegraphics[keepaspectratio]{main_files/figure-pdf/cell-7-output-1.png}}
 
@@ -590,30 +476,6 @@ characteristics
   Reproducibility Checklist: Config use, seeds, artifact locations,
   environment capture (Python + key pkg versions).
 \end{itemize}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Train model using generated features}
-\ImportTok{import}\NormalTok{ sys}
-\ImportTok{from}\NormalTok{ pathlib }\ImportTok{import}\NormalTok{ Path}
-\NormalTok{sys.path.append(}\BuiltInTok{str}\NormalTok{(Path.cwd() }\OperatorTok{/} \StringTok{\textquotesingle{}src\textquotesingle{}}\NormalTok{))}
-\ImportTok{from}\NormalTok{ yourproj.train }\ImportTok{import}\NormalTok{ main }\ImportTok{as}\NormalTok{ train\_main}
-\NormalTok{CONFIG }\OperatorTok{=} \StringTok{\textquotesingle{}configs/exp\_baseline.yaml\textquotesingle{}}
-\NormalTok{train\_main(CONFIG)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Evaluate model and save simple plots}
-\ImportTok{import}\NormalTok{ sys}
-\ImportTok{from}\NormalTok{ pathlib }\ImportTok{import}\NormalTok{ Path}
-\NormalTok{sys.path.append(}\BuiltInTok{str}\NormalTok{(Path.cwd() }\OperatorTok{/} \StringTok{\textquotesingle{}src\textquotesingle{}}\NormalTok{))}
-\ImportTok{from}\NormalTok{ yourproj.}\BuiltInTok{eval} \ImportTok{import}\NormalTok{ main }\ImportTok{as}\NormalTok{ eval\_main}
-\NormalTok{CONFIG }\OperatorTok{=} \StringTok{\textquotesingle{}configs/exp\_baseline.yaml\textquotesingle{}}
-\NormalTok{eval\_main(CONFIG)}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{verbatim}
 Metrics: {'accuracy': 1.0, 'auc': None, 'features': ['surprise'], 'n_test': 1}

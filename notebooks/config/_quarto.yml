@@ -6,7 +6,7 @@ format:
     toc-depth: 3
     number-sections: true
     code-copy: true
-    code-fold: show
+    code-fold: true
     code-tools: true
     anchor-sections: true
     smooth-scroll: true
