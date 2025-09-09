@@ -21,4 +21,4 @@ build/
 venv/
 *.venv
 
-/.quarto/
+.quarto/
