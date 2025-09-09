@@ -4,7 +4,7 @@ Convert custom HTML card headings (<div class="section-card"><h2>..</h2></div>)
 and (<div class="subsection-card"><h3>..</h3></div>) into Markdown headings (## / ###).
 
 This makes Quarto's auto-TOC and anchors work while we preserve the look
-via CSS (see notebooks/styles.css).
+via CSS (see notebooks/config/styles.css).
 """
 from __future__ import annotations
 import json

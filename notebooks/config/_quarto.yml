@@ -1,12 +1,7 @@
-project:
-  type: default
-  # Render outputs into the report folder to keep things tidy
-  output-dir: report
-
 format:
   html:
     theme: cosmo
-    css: notebooks/styles.css
+    css: config/styles.css
     toc: true
     toc-depth: 3
     number-sections: true

@@ -1,6 +1,6 @@
 /*
   Project styles for Quarto HTML output
-  - Applied via AI_Template/_quarto.yml -> format.html.css
+  - Applied via AI_Template/notebooks/config/_quarto.yml -> format.html.css
   - Keeps notebook cells clean by avoiding repeated <style> blocks
 */
 
@@ -237,3 +237,4 @@ main.content p.banner-subtitle {
 @media (max-width: 991px) {
   .code-tools, .quarto-code-tools { right: 20px; }
 }
+
