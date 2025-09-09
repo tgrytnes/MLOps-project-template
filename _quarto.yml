@@ -18,33 +18,37 @@ format:
     highlight-style: github
     fig-cap-location: bottom
     tbl-cap-location: top
+    title-block-style: default
+    title-block-banner: true
   pdf:
     documentclass: scrartcl
     toc: true
     number-sections: true
+    pdf-engine: lualatex
+    latex-auto-install: false
+    mainfont: "Latin Modern Roman"
+    sansfont: "Latin Modern Sans"
+    monofont: "Latin Modern Mono"
+    geometry: margin=1in
     include-in-header:
       - text: |
-          % Colors and section styling
-          \usepackage{sectsty}
+          % Colors and section/title styling using KOMA-Script interfaces
           \usepackage{xcolor}
           \definecolor{sectionblue}{HTML}{2563eb}
-          \sectionfont{\color{sectionblue}\bfseries\Large}
-          \subsectionfont{\color{sectionblue}\bfseries\large}
 
-          % Title styling
-          \usepackage{titling}
-          \pretitle{\begin{center}\Huge\bfseries\color{sectionblue}}
-          \posttitle{\par\end{center}\vskip 0.5em}
-          \preauthor{\begin{center}\large}
-          \postauthor{\par\end{center}}
-          \predate{\begin{center}\small}
-          \postdate{\par\end{center}}
+          % KOMA: headings and title/subtitle colors
+          \setkomafont{title}{\color{sectionblue}\bfseries\Huge}
+          \setkomafont{subtitle}{\color{sectionblue}\large}
+          \setkomafont{section}{\color{sectionblue}\bfseries\Large}
+          \setkomafont{subsection}{\color{sectionblue}\bfseries\large}
 
           % Code block styling via Shaded redefinition
           \usepackage{tcolorbox}
+          \tcbuselibrary{skins,breakable}
           \definecolor{codebg}{HTML}{F0F8FF}
           \renewenvironment{Shaded}{%
             \begin{tcolorbox}[%
+              enhanced,%
               colback=codebg,%
               colframe=codebg,%
               borderline west={3pt}{0pt}{sectionblue},%
@@ -66,5 +70,5 @@ execute:
   message: false
 
 metadata:
-  title-block-banner: true
-  title-block-style: default
+  title: "Project Template: End-to-End AI/ML Pipeline"
+  subtitle: "A reusable notebook scaffold for DS projects — ingestion, preprocessing, EDA, modeling, training, evaluation"

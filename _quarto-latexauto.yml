@@ -1,0 +1,5 @@
+format:
+  pdf:
+    latex-auto-install: true
+    keep-tex: true
+
