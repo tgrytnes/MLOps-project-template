@@ -23,3 +23,30 @@ The main training pipeline can be executed with a single script, which takes a c
 ```bash
 # Run the full pipeline using the baseline experiment configuration
 bash scripts/run_train.sh configs/exp_baseline.yaml
+```
+
+## Initialize a New Project
+
+Use the one-time init script to rename the template package and metadata:
+
+```bash
+# Dry run
+python scripts/init_project.py \
+  --package my_project \
+  --dist-name my-project \
+  --title "My Project" \
+  --kernel-name my-project-venv \
+  --dry-run
+
+# Apply changes
+python scripts/init_project.py \
+  --package my_project \
+  --dist-name my-project \
+  --title "My Project" \
+  --kernel-name my-project-venv
+```
+
+This script:
+- Renames `src/yourproj` to `src/<package>`
+- Updates imports and metadata (pyproject name, kernel name)
+- Adjusts titles in docs and notebook imports
