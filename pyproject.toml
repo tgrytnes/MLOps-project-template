@@ -16,7 +16,6 @@ dependencies = [
     "ruff",
     "black",
     "pytest",
-    "azure-storage-blob>=12.23.1",
 ]
 
 [build-system]
