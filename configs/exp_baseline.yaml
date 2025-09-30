@@ -1,23 +1,15 @@
 seed: 42
 paths:
-  raw_prices: data/raw/prices.csv
-  raw_earnings: data/raw/earnings.csv
+  raw_data: data/raw
   artifacts: artifacts
-task: tabular
+task: your_project_task
 train:
-  target: y_d1
+  target: y
   test_size: 0.25
-  features: ["surprise"]
-  # choose from: logreg_sklearn | mlp_torch | mlp_tf
-  model: "logreg_sklearn"
-  # model-specific args
+  date_col: null  # Optional: specify date column for chronological split
+  # Model choice: logreg_baseline | logreg_l1 | logreg_l2 | random_forest | xgboost
+  model: "logreg_baseline"
+  # Optional: specify features list, or leave empty to use all columns except target
+  # features: ["feature1", "feature2"]
+  # Model-specific args (can override defaults)
   model_args: {}
-trainer:
-  epochs: 10
-  batch_size: 256
-  lr: 0.001
-compute:
-  # backend: auto|torch|tensorflow|cpu
-  backend: auto
-  # mixed_precision: auto|true|false
-  mixed_precision: auto
